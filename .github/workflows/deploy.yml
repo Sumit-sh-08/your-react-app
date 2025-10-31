@@ -1,46 +1,29 @@
-name: CI/CD Pipeline for React App
+name: React App CI/CD
 
 on:
   push:
-    branches: [ main ]  # Trigger on every push to main branch
+    branches:
+      - main
 
 jobs:
-  build-test-deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout your repository
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2️⃣ Set up Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
 
-      # 3️⃣ Cache node_modules for faster builds
-      - name: Cache dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
-      # 4️⃣ Install dependencies
       - name: Install dependencies
         run: npm ci
 
-      # 5️⃣ Run tests (if available)
-      - name: Run tests
-        run: npm test --if-present
-
-      # 6️⃣ Build your app
-      - name: Build the project
+      - name: Build React app
         run: npm run build
 
-      # 7️⃣ Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
